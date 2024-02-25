@@ -1,7 +1,7 @@
 """Definition of dag class"""
 
 import logging
-from typing import List
+from typing import List, Dict
 
 from networkx import DiGraph, is_directed_acyclic_graph
 
@@ -26,8 +26,8 @@ class Dag:
     def __init__(self, name: str, tasks: List[Task]):
         self.name = name
         self.tasks = tasks
-        self.errors = {}
         self.graph: DiGraph = DiGraph()
+        self.errors: Dict[str, str] = {}
         self.eligible_tasks: List[Task] = []
         self.execution_data = {
             EXECUTED_TASKS: set(),
