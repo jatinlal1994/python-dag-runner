@@ -1,4 +1,4 @@
-"""Constants to be used in dagger"""
+"""Constants to be used in library"""
 
 EXECUTED_TASKS = "executed_tasks"
 FAILED_TASKS = "failed_tasks"

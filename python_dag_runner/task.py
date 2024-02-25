@@ -1,16 +1,17 @@
 """Definition of task and it's metadata"""
 
 import logging
-from uuid import uuid4
-from uuid import UUID
-from enum import StrEnum, auto
+from uuid import UUID, uuid4
+from enum import Enum
 from typing import Callable
 
+from python_dag_runner.lib.exceptions import InvalidTaskError
 
-class TaskStatus(StrEnum):
+
+class TaskStatus(Enum):
     """Options for task status"""
-    SUCCESS = auto()
-    FAILED = auto()
+    SUCCESS = "success"
+    FAILED = "failed"
 
 
 class Task:
@@ -51,6 +52,13 @@ class Task:
 
     def __ior__(self, other):
         """Set dependencies of task using '|=' operator"""
+        if not isinstance(other, set):
+            raise InvalidTaskError
+
+        for task in other:
+            if not isinstance(task, Task):
+                raise InvalidTaskError
+
         self.dependencies = other
         return self
 
