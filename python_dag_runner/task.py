@@ -1,9 +1,9 @@
 """Definition of task and it's metadata"""
 
 import logging
-from uuid import UUID, uuid4
 from enum import Enum
-from typing import Callable
+from uuid import UUID, uuid4
+from typing import Callable, Set
 
 from python_dag_runner.lib.exceptions import InvalidTaskError
 
@@ -35,7 +35,7 @@ class Task:
         >>> task = Task(name='Fetch resources', executable=fetch_resources)
     """
 
-    def __init__(self, name: str, executable: Callable, dependencies: set['Task'] = None):
+    def __init__(self, name: str, executable: Callable, dependencies: Set['Task'] = None):
         """Task Constructor"""
         self.id: UUID = uuid4()
         self.name: str = name
@@ -68,7 +68,7 @@ class Task:
             logging.info("Starting execution of %s", self.name)
             self.executable()
             dag.task_completion_signal(self, TaskStatus.SUCCESS)
-        except (TypeError, BaseException) as err:  # pylint: disable=broad-except
+        except Exception as err:  # pylint: disable=broad-except
             dag.errors[self] = repr(err)
             dag.task_completion_signal(self, TaskStatus.SUCCESS)
             logging.exception(err)
