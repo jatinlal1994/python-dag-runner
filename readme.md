@@ -38,3 +38,33 @@ dag = Dag("My first DAG", tasks=[task_1, task_2])
 # Initiate execution of Dag using initialize method
 dag.initiate()
 ```
+
+## Example of complex dependencies
+Multiple internal dependencies can be defined using dependency operator.
+```python
+task_2 |= {task_1}
+task_3 |= {task_2}
+task_4 |= {task_2}
+task_5 |= {task_2}
+task_6 |= {task_3, task_4, task_5}
+task_7 |= {task_6}
+task_8 |= {task_7}
+task_9 |= {task_7}
+```
+
+The above steps result in the dependency graph as shown below
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+stateDiagram
+direction LR
+    task_one --> task_two
+    task_two --> task_three
+    task_two --> task_four
+    task_two --> task_five
+    task_three --> task_six
+    task_four --> task_six
+    task_five --> task_six
+    task_six --> task_seven
+    task_seven --> task_eight
+    task_seven --> task_nine
+```
