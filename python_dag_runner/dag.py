@@ -1,6 +1,7 @@
 """Definition of dag class"""
 
 import logging
+from threading import Thread
 from typing import List, Dict
 
 from networkx import DiGraph, is_directed_acyclic_graph
@@ -105,9 +106,24 @@ class Dag:
                 eligible_tasks.append(task)
 
         logging.info("Tasks %s are eligible to run", eligible_tasks)
+
+        threads = []
         for task in eligible_tasks:
+            thread = Thread(name=task.name, target=task.execute, args=[self])
+            thread.start()
+            threads.append(thread)
             self.eligible_tasks.remove(task)
-            task.execute(self)
+
+        for thread in threads:
+            thread.join()
+
+    def generate_node_graph(self):
+        """Generate a mermaid node graph diagram"""
+        return "\n".join(
+            ["```mermaid", "%%{init: {'theme': 'neutral'}}%%", "stateDiagram", "direction LR"] + \
+            [f"    {from_node} --> {to_node}" for from_node, to_node in self.graph.edges()] +\
+            ["```"]
+        )
 
     def initiate(self):
         """Initiate execution of tasks"""
