@@ -3,7 +3,7 @@
 import logging
 from enum import Enum
 from uuid import UUID, uuid4
-from typing import Callable, Set
+from typing import Callable, Set, List, Dict
 
 from python_dag_runner.lib.exceptions import InvalidTaskError
 
@@ -35,11 +35,20 @@ class Task:
         >>> task = Task(name='Fetch resources', executable=fetch_resources)
     """
 
-    def __init__(self, name: str, executable: Callable, dependencies: Set['Task'] = None):
+    def __init__(
+            self,
+            name: str,
+            executable: Callable,
+            args: List = None,
+            kwargs: Dict = None,
+            dependencies: Set['Task'] = None
+        ):
         """Task Constructor"""
         self.id: UUID = uuid4()
         self.name: str = name
         self.executable: Callable = executable
+        self.args = args or []
+        self.kwargs = kwargs or {}
         self.dependencies: dependencies = dependencies or set()
 
     def __repr__(self):
@@ -66,9 +75,9 @@ class Task:
         """Start execution of function"""
         try:
             logging.info("Starting execution of %s", self.name)
-            self.executable()
+            self.executable(*self.args, **self.kwargs)
             dag.task_completion_signal(self, TaskStatus.SUCCESS)
-        except Exception as err:  # pylint: disable=broad-except
+        except Exception as err:
             dag.errors[self] = repr(err)
             dag.task_completion_signal(self, TaskStatus.SUCCESS)
             logging.exception(err)
