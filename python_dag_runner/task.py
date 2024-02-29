@@ -77,7 +77,7 @@ class Task:
             logging.info("Starting execution of %s", self.name)
             self.executable(*self.args, **self.kwargs)
             dag.task_completion_signal(self, TaskStatus.SUCCESS)
-        except Exception as err:  # pylint: disable=broad-except
+        except Exception as err:
             dag.errors[self] = repr(err)
             dag.task_completion_signal(self, TaskStatus.SUCCESS)
             logging.exception(err)
