@@ -2,6 +2,7 @@
 ![Python](https://img.shields.io/badge/python-3.8-blue.svg)
 ![Python Style](https://img.shields.io/badge/code%20style-pep8-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/python-dag-runner)
 
 Python DAG Runner is a Python library for running Directed Acyclic Graphs (DAGs) efficiently. It provides a simple and intuitive interface for defining and executing complex workflows. It uses networkx library to generate directed acyclic graph from the tasks and it's dependencies.
 
